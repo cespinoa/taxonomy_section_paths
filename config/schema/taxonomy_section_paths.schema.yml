@@ -1,0 +1,28 @@
+taxonomy_section_paths.settings:
+  type: config_object
+  label: 'Taxonomy Section Paths settings'
+  mapping:
+    bundles:
+      type: mapping
+      label: 'Per-bundle settings'
+      mapping:
+        # Este comodín permite múltiples bundles (como 'article', 'test_article', etc.)
+        "*":
+          type: mapping
+          mapping:
+            vocabulary:
+              type: string
+              label: 'Vocabulary'
+            field:
+              type: string
+              label: 'Field name'
+    generate_node_alias_if_term_empty:
+      type: boolean
+      label: 'Generate alias if term empty'
+    enable_event_logging:
+      type: boolean
+      label: 'Enable event logging'
+    silent_messages:
+      type: boolean
+      label: 'Silent system messages'
+

@@ -1,0 +1,12 @@
+taxonomy_section_paths.settings_tab:
+  route_name: taxonomy_section_paths.settings
+  title: 'Configuración'
+  base_route: taxonomy_section_paths.settings
+  weight: 0
+
+
+taxonomy_section_paths.batch_tab:
+  route_name: taxonomy_section_paths.batch
+  title: 'Regenerar alias'
+  base_route: taxonomy_section_paths.settings
+  weight: 1

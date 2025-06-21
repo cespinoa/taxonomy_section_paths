@@ -1,0 +1,121 @@
+services:
+  taxonomy_section_paths.subscriber:
+    class: Drupal\taxonomy_section_paths\EventSubscriber\TaxonomySectionPathSubscriber
+    arguments:
+      - '@taxonomy_section_paths.processor'
+      - '@taxonomy_section_paths.node_change_detector'
+      - '@taxonomy_section_paths.term_change_detector'
+      - '@taxonomy_section_paths.alias_actions'
+      - '@config.factory'
+      - '@taxonomy_section_paths.store'
+    tags:
+      - { name: event_subscriber }
+      
+  taxonomy_section_paths.resolver:
+    class: Drupal\taxonomy_section_paths\Service\PathResolverService
+    arguments:
+      - '@entity_type.manager'
+      - '@transliteration'
+      - '@path_alias.repository'
+      - '@taxonomy_section_paths.slugifier'
+    tags: []
+    public: true
+    
+  Drupal\taxonomy_section_paths\Contract\PathResolverServiceInterface: '@taxonomy_section_paths.resolver'
+
+  taxonomy_section_paths.processor:
+    class: Drupal\taxonomy_section_paths\Service\ProcessorService
+    arguments:
+      - '@entity_type.manager'
+      - '@language_manager'
+      - '@taxonomy_section_paths.resolver'
+      - '@config.factory'
+      - '@taxonomy_section_paths.alias_actions'
+      - '@taxonomy_section_paths.store'
+      - '@taxonomy_section_paths.alias_message_logger'
+      - '@taxonomy_section_paths.alias_conflict_resolver'
+      - '@taxonomy_section_paths.related_nodes'
+      - '@taxonomy_section_paths.batch_processor'
+
+  Drupal\taxonomy_section_paths\Contract\ProcessorServiceInterface: '@taxonomy_section_paths.processor'
+
+
+  taxonomy_section_paths.alias_actions:
+    class: Drupal\taxonomy_section_paths\Service\AliasActionsService
+    arguments:
+      - '@path_alias.repository'
+      - '@entity_type.manager'
+
+  Drupal\taxonomy_section_paths\Contract\AliasActionsServiceInterfaz: '@taxonomy_section_paths.alias_actions'
+
+  taxonomy_section_paths.related_nodes:
+    class: Drupal\taxonomy_section_paths\Service\RelatedNodesService
+    arguments:
+      - '@entity_type.manager'
+      - '@config.factory'
+      - '@taxonomy_section_paths.resolver'
+      - '@taxonomy_section_paths.alias_actions'
+      - '@taxonomy_section_paths.alias_message_logger'
+
+  Drupal\taxonomy_section_paths\Contract\RelatedNodesServiceInterface: '@taxonomy_section_paths.related_nodes'
+
+  taxonomy_section_paths.regenerate_alias:
+    class: Drupal\taxonomy_section_paths\Service\BatchRegenerationService
+    arguments:
+      - '@entity_type.manager'
+
+      
+  taxonomy_section_paths.batch_processor:
+    class: Drupal\taxonomy_section_paths\Service\BatchProcessorService
+    arguments:
+      - '@entity_type.manager'
+      - '@taxonomy_section_paths.related_nodes'
+      - '@string_translation'
+
+
+  taxonomy_section_paths.store:
+    class: Drupal\taxonomy_section_paths\Service\RequestContextStoreService
+    public: true
+    
+  Drupal\taxonomy_section_paths\Contract\RequestContextStoreServiceInterface: '@taxonomy_section_paths.store'
+
+
+  taxonomy_section_paths.node_change_detector:
+    class: Drupal\taxonomy_section_paths\Service\NodeChangeDetector
+    arguments:
+      - '@config.factory'
+    tags: []
+    public: true
+
+  Drupal\taxonomy_section_paths\Contract\NodeChangeDetectorInterface: '@taxonomy_section_paths.node_change_detector'
+
+  taxonomy_section_paths.term_change_detector:
+    class: Drupal\taxonomy_section_paths\Service\TermChangeDetector
+    arguments:
+      - '@config.factory'
+    tags: []
+    public: true
+  
+  Drupal\taxonomy_section_paths\Contract\TermChangeDetectorInterface: '@taxonomy_section_paths.term_change_detector'
+
+  taxonomy_section_paths.alias_conflict_resolver:
+    class: Drupal\taxonomy_section_paths\Utility\AliasConflictResolver
+    arguments:
+      - '@path_alias.repository'
+
+  Drupal\taxonomy_section_paths\Contract\AliasConflictResolverInterface: '@taxonomy_section_paths.alias_conflict_resolver'
+
+
+  taxonomy_section_paths.alias_message_logger:
+    class: Drupal\taxonomy_section_paths\Utility\AliasMessageLogger
+    arguments:
+      - '@config.factory'
+      - '@messenger'
+      - '@logger.factory'
+
+  Drupal\taxonomy_section_paths\Contract\AliasMessageLoggerInterface: '@taxonomy_section_paths.alias_message_logger'
+
+  taxonomy_section_paths.slugifier:
+    class: Drupal\taxonomy_section_paths\Utility\Slugifier
+
+  Drupal\taxonomy_section_paths\Contract\SlugifierInterface: '@taxonomy_section_paths.slugifier'

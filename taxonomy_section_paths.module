@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Taxonomy Section Paths module.
+ */
+
+use Drupal\Core\Field\FieldConfigInterface;
+
+use Drupal\field\FieldStorageConfigInterface;
+use Drupal\field\Entity\FieldStorageConfig;
+
+
+/**
+ * Implements hook_requirements().
+ */
+function taxonomy_section_paths_requirements($phase) {
+  $requirements = [];
+
+  // Solo nos interesa en la página de estado.
+  if ($phase === 'runtime') {
+    $config = \Drupal::config('taxonomy_section_paths.settings')->get('bundles') ?? [];
+    
+    foreach ($config as $bundle => $data) {
+      $field_name = $data['field'];
+      
+      /** @var \Drupal\field\FieldConfigInterface[] $field_configs */
+      $field_configs = \Drupal::entityTypeManager()
+        ->getStorage('field_config')
+        ->loadByProperties([
+          'entity_type' => 'node',
+          'bundle' => $bundle,
+          'field_name' => $field_name,
+        ]);
+
+      foreach ($field_configs as $field_config) {
+        $cardinality = $field_config->getFieldStorageDefinition()->getCardinality();
+
+        if ($cardinality !== 1) {
+          $requirements['taxonomy_section_paths_cardinality_' . $field_name] = [
+            'title' => t('Taxonomy Section Paths: Cardinality requirement'),
+            'value' => t('Field "@field" in node type "@bundle" \n has cardinality @card.', [
+              '@field' => $field_config->label(),
+              '@bundle' => $bundle,
+              '@card' => $cardinality,
+            ]),
+            'severity' => REQUIREMENT_ERROR,
+          ];
+        }
+      }
+    }
+  }
+
+  return $requirements;
+}
+
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function taxonomy_section_paths_form_field_config_edit_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+
+  /** @var \Drupal\field\Entity\FieldStorageConfig $field_storage */
+  $field_storage = $form_state->getFormObject()->getEntity();
+  $field_name = $field_storage->getName();
+  $entity_type = $field_storage->getTargetEntityTypeId();
+
+  if ($entity_type !== 'node') {
+    return;
+  }
+
+  $config = \Drupal::config('taxonomy_section_paths.settings')->get('bundles') ?? [];
+
+  foreach ($config as $bundle => $data) {
+    if ($data['field'] === $field_name) {
+      // Impedir modificar la cardinalidad.
+      if (isset($form['field_storage']['subform']['cardinality_container']['cardinality'])) {
+        $form['field_storage']['subform']['cardinality_container']['cardinality']['#disabled'] = TRUE;
+        $form['field_storage']['subform']['cardinality_container']['cardinality']['#description'] = NULL;
+
+        $form['field_storage']['subform']['cardinality_container']['cardinality_number']['#disabled'] = TRUE;
+        $form['field_storage']['subform']['cardinality_container']['cardinality_number']['#description'] = t('Este campo está siendo utilizado por el módulo Taxonomy Section Paths. Para cambiar la cardinalidad, elimínelo primero de la configuración del módulo.');
+        
+      }
+
+      // Mensaje superior adicional.
+      \Drupal::messenger()->addWarning(t(
+        'El campo "@field" está en uso por el módulo Taxonomy Section Paths. Su cardinalidad no puede modificarse mientras esté en la configuración.',
+        ['@field' => $field_name]
+      ));
+      break;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+taxonomy_section_paths.settings:
+  title: 'Taxonomy Section Paths'
+  description: 'Configuración para generación de alias jerárquicos.'
+  route_name: taxonomy_section_paths.settings
+  parent: system.admin_config_search
+  weight: 100

@@ -1,0 +1,17 @@
+services:
+  taxonomy_section_paths.commands:
+    class: Drupal\taxonomy_section_paths\Drush\Commands\TaxonomySectionPathsCommands
+    arguments:
+      - '@config.factory'
+      - '@taxonomy_section_paths.processor'
+      - '@taxonomy_section_paths.regenerate_alias'
+    tags:
+      - { name: drush.command }
+
+  taxonomy_section_paths.test_data_commands:
+    class: Drupal\taxonomy_section_paths\Drush\Commands\TaxonomySectionPathsTestDataCommands
+    arguments:
+      - '@config.factory'
+      - '@uuid'
+    tags:
+      - { name: drush.command }

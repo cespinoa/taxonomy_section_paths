@@ -1,0 +1,18 @@
+taxonomy_section_paths.settings:
+  path: '/admin/config/search/taxonomy-section-paths'
+  defaults:
+    _form: '\Drupal\taxonomy_section_paths\Form\TaxonomySectionPathsSettingsForm'
+    _title: 'Taxonomy Section Paths settings'
+  requirements:
+    _permission: 'administer site configuration'
+
+
+taxonomy_section_paths.batch:
+  path: '/admin/config/search/taxonomy-section-paths/batch'
+  defaults:
+    _form: '\Drupal\taxonomy_section_paths\Form\TaxonomySectionPathsBatchForm'
+    _title: 'Regenerar alias de términos'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE

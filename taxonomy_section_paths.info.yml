@@ -1,0 +1,9 @@
+name: 'Taxonomy Section Paths'
+type: module
+description: 'Organize content into hierarchical sections and manage URL aliases for taxonomies.'
+package: Site structure
+core_version_requirement: ^10 || ^11
+dependencies:
+  - taxonomy
+  - entity_events (>=2.0.5)
+configure: taxonomy_section_paths.settings
