@@ -50,19 +50,4 @@ interface AliasActionsServiceInterface {
    */
   public function saveNewAlias(string $path, string $alias, string $langcode): bool;
 
-  /**
-   * Check if the proposed alias exists. If it exists add a suffix.
-   *
-   * @param string $base_alias
-   *   The proposed alias.
-   * @param string $langcode
-   *   The language code of entity.
-   * @param string $path
-   *   Entity path.
-   *
-   * @return string
-   *   The alias with suffix if it's need.
-   */
-  public function ensureUniqueAlias(string $base_alias, string $langcode, string $path): string;
-
 }

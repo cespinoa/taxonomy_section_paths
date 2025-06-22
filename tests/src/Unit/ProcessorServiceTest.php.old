@@ -1,0 +1,301 @@
+<?php
+
+namespace Drupal\Tests\taxonomy_section_paths\Unit\Service;
+
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\Config;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\node\NodeInterface;
+use Drupal\taxonomy\TermInterface;
+use Drupal\taxonomy_section_paths\Contract\AliasActionsServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\AliasConflictResolverInterface;
+use Drupal\taxonomy_section_paths\Contract\AliasMessageLoggerInterface;
+use Drupal\taxonomy_section_paths\Contract\PathResolverServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\RelatedNodesServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\RequestContextStoreServiceInterface;
+use Drupal\taxonomy_section_paths\Service\BatchProcessorService;
+use Drupal\taxonomy_section_paths\Service\ProcessorService;
+use Drupal\Tests\taxonomy_section_paths\Stub\FieldValueStub;
+use Drupal\Core\Entity\EntityViewBuilderInterface;
+use PHPUnit\Framework\TestCase;
+
+class ProcessorServiceTest extends TestCase {
+
+  public function testSetNodeAliasInsertWithTerm(): void {
+    $termId = 123;
+    $nodeId = 456;
+
+    // Mock del término.
+    $termMock = $this->createMock(TermInterface::class);
+    $termMock->method('id')->willReturn($termId);
+    $termMock->method('label')->willReturn('Term Label');
+
+    // Mock del storage de términos.
+    $termStorageMock = $this->createMock(EntityStorageInterface::class);
+    $termStorageMock->method('load')->with($termId)->willReturn($termMock);
+
+    // Mock de EntityTypeManager que devuelve el storage anterior.
+    $entityTypeManagerMock = $this->createMock(EntityTypeManagerInterface::class);
+    $entityTypeManagerMock->method('getStorage')->with('taxonomy_term')->willReturn($termStorageMock);
+    $entityTypeManagerMock->method('getViewBuilder')->with('node')->willReturn(
+      $this->createConfiguredMock(\Drupal\Core\Entity\EntityViewBuilderInterface::class, [
+        'resetCache' => NULL
+      ])
+    );
+
+    // Mock de LanguageManager.
+    $languageManagerMock = $this->createMock(LanguageManagerInterface::class);
+
+    $fieldItemListMock = new FieldValueStub(['target_id' => 123]);
+    //~ ///var_dump($fieldItemListMock->target_id);
+
+    $nodeMock = $this->createMock(NodeInterface::class);
+    $nodeMock->method('bundle')->willReturn('some_bundle');
+    $nodeMock->method('get')->willReturnCallback(fn($field) => $field === 'field_tags' ? $fieldItemListMock : NULL);
+    $nodeMock = $this->createMock(NodeInterface::class);
+    $nodeMock->method('bundle')->willReturn('some_bundle');
+    $nodeMock->method('get')->willReturnCallback(fn($field) => $field === 'field_tags' ? $fieldItemListMock : NULL);
+    $nodeMock->method('id')->willReturn($nodeId);
+    $nodeMock->method('label')->willReturn('Node Title');
+    $nodeMock->method('language')->willReturn($this->createConfiguredMock(LanguageInterface::class, ['getId' => 'en']));
+
+    // Configuración simulada.
+    $configMock = $this->createMock(Config::class);
+    $configMock->method('get')->willReturnCallback(function ($key) {
+      return match ($key) {
+        'bundles' => ['some_bundle' => ['field' => 'field_tags']],
+        'generate_node_alias_if_term_empty' => FALSE,
+        default => NULL,
+      };
+    });
+
+    $configFactoryMock = $this->createMock(ConfigFactoryInterface::class);
+    $configFactoryMock->method('get')->with('taxonomy_section_paths.settings')->willReturn($configMock);
+
+    // Resolver que devuelve un alias.
+    $resolverMock = $this->createMock(PathResolverServiceInterface::class);
+    $resolverMock->expects($this->once())
+      ->method('getNodeAliasPath')
+      ->with($termMock, $nodeMock)
+      ->willReturn('/some/alias/path');
+
+    // Resolver de conflictos que devuelve el mismo alias.
+    $aliasConflictResolverMock = $this->createMock(AliasConflictResolverInterface::class);
+    $aliasConflictResolverMock->method('ensureUniqueAlias')->willReturn('/some/alias/path');
+
+    // Acciones sobre alias, esperamos que se llame a saveNewAlias().
+    $aliasActionsMock = $this->createMock(AliasActionsServiceInterface::class);
+    $aliasActionsMock->expects($this->once())
+      ->method('saveNewAlias')
+      ->with('/node/456', '/some/alias/path', 'en');
+
+    // Logger, se espera que registre la operación.
+    $messageLoggerMock = $this->createMock(AliasMessageLoggerInterface::class);
+    $messageLoggerMock->expects($this->once())
+      ->method('logOperation')
+      ->with('insert', 'node', $nodeId, 'Node Title', '/some/alias/path', '');
+
+    // Mocks vacíos porque no se usan en este test.
+    $contextServiceMock = $this->createMock(RequestContextStoreServiceInterface::class);
+    $relatedNodesMock = $this->createMock(RelatedNodesServiceInterface::class);
+    $batchProcessorMock = $this->createMock(BatchProcessorService::class);
+
+    // Instanciamos el servicio real.
+    $service = new ProcessorService(
+      $entityTypeManagerMock,
+      $languageManagerMock,
+      $resolverMock,
+      $configFactoryMock,
+      $aliasActionsMock,
+      $contextServiceMock,
+      $messageLoggerMock,
+      $aliasConflictResolverMock,
+      $relatedNodesMock,
+      $batchProcessorMock
+    );
+
+    // Ejecutamos el test con is_update = FALSE.
+    $service->setNodeAlias($nodeMock, FALSE);
+  }
+
+  public function testSetNodeAliasInsertWithoutTerm(): void {
+    
+    $nodeId = 456;
+
+    // Mock del campo del nodo que *no tiene término*.
+    $fieldItemListMock = $this->createMock(FieldItemListInterface::class);
+    $fieldItemListMock->target_id = null;
+
+    $nodeMock = $this->createMock(NodeInterface::class);
+    $nodeMock->method('bundle')->willReturn('some_bundle');
+    $nodeMock->method('get')->willReturnCallback(fn($field) => $field === 'field_tags' ? $fieldItemListMock : NULL);
+    $nodeMock->method('id')->willReturn($nodeId);
+    $nodeMock->method('label')->willReturn('Node Title');
+    $nodeMock->method('language')->willReturn(
+      $this->createConfiguredMock(LanguageInterface::class, ['getId' => 'en'])
+    );
+
+    // Configuración activa que permite generar alias sin término.
+    $configMock = $this->createMock(Config::class);
+    $configMock->method('get')->willReturnCallback(function ($key) {
+      return match ($key) {
+        'bundles' => ['some_bundle' => ['field' => 'field_tags']],
+        'generate_node_alias_if_term_empty' => TRUE,
+        default => NULL,
+      };
+    });
+
+    $configFactoryMock = $this->createMock(ConfigFactoryInterface::class);
+    $configFactoryMock->method('get')->with('taxonomy_section_paths.settings')->willReturn($configMock);
+
+    $aliasPath = '/auto/alias/for/node';
+
+    // Resolver: debe llamarse con `$term = null`.
+    $resolverMock = $this->createMock(PathResolverServiceInterface::class);
+    $resolverMock->expects($this->once())
+      ->method('getNodeAliasPath')
+      ->with(null, $nodeMock)
+      ->willReturn($aliasPath);
+
+    // Mock que devuelve el mismo alias.
+    $aliasConflictResolverMock = $this->createMock(AliasConflictResolverInterface::class);
+    $aliasConflictResolverMock->method('ensureUniqueAlias')
+      ->with($aliasPath, 'en', '/node/456')
+      ->willReturn($aliasPath);
+
+    // Verifica que se guarda el nuevo alias.
+    $aliasActionsMock = $this->createMock(AliasActionsServiceInterface::class);
+    $aliasActionsMock->expects($this->once())
+      ->method('saveNewAlias')
+      ->with('/node/456', $aliasPath, 'en');
+
+    $messageLoggerMock = $this->createMock(AliasMessageLoggerInterface::class);
+    $messageLoggerMock->expects($this->once())
+      ->method('logOperation')
+      ->with('insert', 'node', 456, 'Node Title', $aliasPath, null);
+
+    // Mocks restantes que no se usan directamente.
+    $languageManagerMock = $this->createMock(LanguageManagerInterface::class);
+    $contextServiceMock = $this->createMock(RequestContextStoreServiceInterface::class);
+    $relatedNodesMock = $this->createMock(RelatedNodesServiceInterface::class);
+    $batchProcessorMock = $this->createMock(BatchProcessorService::class);
+
+    $entityTypeManagerMock = $this->createMock(EntityTypeManagerInterface::class);
+    $entityTypeManagerMock->method('getViewBuilder')->willReturn(
+      $this->createMock(\Drupal\Core\Entity\EntityViewBuilderInterface::class)
+    );
+    
+
+    $processorService = new ProcessorService(
+      $entityTypeManagerMock,
+      $languageManagerMock,
+      $resolverMock,
+      $configFactoryMock,
+      $aliasActionsMock,
+      $contextServiceMock,
+      $messageLoggerMock,
+      $aliasConflictResolverMock,
+      $relatedNodesMock,
+      $batchProcessorMock
+    );
+
+    $processorService->setNodeAlias($nodeMock, FALSE);
+
+
+    $this->assertEquals(456, $nodeMock->id());
+    
+  }
+
+
+  public function testSetNodeAliasInsertWithoutTermAliasGenerationDisabled(): void {
+    $termId = NULL;
+    $nodeId = 456;
+
+    // Mock del LanguageManager.
+    $languageManagerMock = $this->createMock(LanguageManagerInterface::class);
+
+    // Mock del Config.
+    $configMock = $this->createMock(Config::class);
+    $configMock->method('get')
+      ->willReturnCallback(function ($key) {
+        if ($key === 'bundles') {
+          return ['some_bundle' => ['field' => 'field_tags']];
+        }
+        if ($key === 'generate_node_alias_if_term_empty') {
+          return FALSE; // alias deshabilitado si no hay término
+        }
+        return NULL;
+      });
+
+    $configFactoryMock = $this->createMock(ConfigFactoryInterface::class);
+    $configFactoryMock->method('get')
+      ->with('taxonomy_section_paths.settings')
+      ->willReturn($configMock);
+
+    // Mock nodo sin término.
+    $fieldItemListMock = $this->createMock(FieldItemListInterface::class);
+    $fieldItemListMock->target_id = NULL;
+
+    $nodeMock = $this->createMock(NodeInterface::class);
+    $nodeMock->method('bundle')->willReturn('some_bundle');
+    $nodeMock->method('get')->willReturnCallback(fn($field) => $field === 'field_tags' ? $fieldItemListMock : NULL);
+    $nodeMock->method('id')->willReturn($nodeId);
+    $nodeMock->method('label')->willReturn('Node Title');
+    $nodeMock->method('language')->willReturn(
+      $this->createConfiguredMock(LanguageInterface::class, ['getId' => 'en'])
+    );
+
+    // Mocks de servicios.
+    $entityStorageMock = $this->createMock(EntityStorageInterface::class);
+    $entityTypeManagerMock = $this->createMock(EntityTypeManagerInterface::class);
+    $entityTypeManagerMock->method('getStorage')
+      ->with('taxonomy_term')
+      ->willReturn($entityStorageMock);
+
+    // Mock del view builder para resetCache.
+    $viewBuilderMock = $this->createMock(EntityViewBuilderInterface::class);
+    $viewBuilderMock->expects($this->once())
+      ->method('resetCache')
+      ->with([$nodeMock]);
+
+    $entityTypeManagerMock->method('getViewBuilder')
+      ->with('node')
+      ->willReturn($viewBuilderMock);
+
+    // Otros mocks necesarios pero no usados en este test.
+    $resolverMock = $this->createMock(PathResolverServiceInterface::class);
+    $aliasActionsMock = $this->createMock(AliasActionsServiceInterface::class);
+    $contextServiceMock = $this->createMock(RequestContextStoreServiceInterface::class);
+    $messageLoggerMock = $this->createMock(AliasMessageLoggerInterface::class);
+    $aliasConflictResolverMock = $this->createMock(AliasConflictResolverInterface::class);
+    $relatedNodesMock = $this->createMock(RelatedNodesServiceInterface::class);
+    $batchProcessorMock = $this->createMock(BatchProcessorService::class);
+
+    // Instancia del servicio a probar.
+    $processorService = new ProcessorService(
+      $entityTypeManagerMock,
+      $languageManagerMock,
+      $resolverMock,
+      $configFactoryMock,
+      $aliasActionsMock,
+      $contextServiceMock,
+      $messageLoggerMock,
+      $aliasConflictResolverMock,
+      $relatedNodesMock,
+      $batchProcessorMock
+    );
+
+    // Ejecutamos el método: no debe intentar crear alias.
+    $processorService->setNodeAlias($nodeMock, FALSE);
+
+    // No se espera ninguna acción, solo verificar que no hubo errores.
+    $this->assertTrue(true);
+  }
+
+
+
+}

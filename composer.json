@@ -3,13 +3,14 @@
   "description": "Organize content into hierarchical sections and manage URL aliases for taxonomies.",
   "type": "drupal-module",
   "license": "GPL-2.0-or-later",
+  "version": "dev-main",
   "autoload": {
     "psr-4": {
       "Drupal\\taxonomy_section_paths\\": "src/"
     }
-  }
+  },
   "require": {
-    "drupal/entity_events": "^2.0.5 || ^3.0",
-    "drupal/raxonomy"
+    "drupal/entity_events": "^2.0.5 || ^3.0"
   }
 }
+

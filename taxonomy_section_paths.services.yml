@@ -45,6 +45,7 @@ services:
     arguments:
       - '@path_alias.repository'
       - '@entity_type.manager'
+      - '@taxonomy_section_paths.alias_factory'
 
   Drupal\taxonomy_section_paths\Contract\AliasActionsServiceInterfaz: '@taxonomy_section_paths.alias_actions'
 
@@ -119,3 +120,8 @@ services:
     class: Drupal\taxonomy_section_paths\Utility\Slugifier
 
   Drupal\taxonomy_section_paths\Contract\SlugifierInterface: '@taxonomy_section_paths.slugifier'
+
+  taxonomy_section_paths.alias_factory:
+    class: Drupal\taxonomy_section_paths\Factory\AliasFactory
+
+  Drupal\taxonomy_section_paths\Contract\AliasFactoryInterface: '@taxonomy_section_paths.alias_factory'

@@ -38,12 +38,13 @@ class AliasMessageLogger implements AliasMessageLoggerInterface {
     ?string $old_alias,
   ): void {
     $strings_array = [
-      '@entity_type' => $entity_type,
-      '@entity_id' => $entity_id,
+      '@entity_type'  => $entity_type,
+      '@entity_id'    => $entity_id,
       '@entity_label' => $entity_label,
-      '@old_alias' => $old_alias ?? '',
-      '@new_alias' => $new_alias ?? '',
+      '@old_alias'    => $old_alias ?? '',
+      '@new_alias'    => $new_alias ?? '',
     ];
+    
 
     $event_logging = $this->configFactory
       ->get('taxonomy_section_paths.settings')
@@ -58,16 +59,17 @@ class AliasMessageLogger implements AliasMessageLoggerInterface {
       'delete_without_new_alias' => t('Alias <strong>@old_alias</strong> removed for @entity_type <strong>@entity_label</strong> (@entity_id).', $strings_array),
       'update' => t('Alias <strong>@old_alias</strong> updated to <strong>@new_alias</strong> for @entity_type <strong>@entity_label</strong> (@entity_id).', $strings_array),
       'insert' => t('Alias <strong>@new_alias</strong> created for @entity_type <strong>@entity_label</strong> (@entity_id).', $strings_array),
-      default => '',
     };
-
+    
     if ($display_messages && $msg) {
       $this->messenger->addStatus($msg);
     }
 
     if ($event_logging && $msg) {
-      $this->logger->notice((string) $msg);
+      $this->logger->notice($msg);
     }
   }
 
+
 }
+

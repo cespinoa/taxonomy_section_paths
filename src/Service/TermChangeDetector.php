@@ -5,6 +5,7 @@ namespace Drupal\taxonomy_section_paths\Service;
 use Drupal\taxonomy_section_paths\Contract\TermChangeDetectorInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\taxonomy\TermInterface;
+use Drupal\taxonomy_section_paths\Helper\EntityHelper;
 
 /**
  * Detects changes in taxonomy terms that affect alias generation.
@@ -36,22 +37,25 @@ class TermChangeDetector implements TermChangeDetectorInterface {
 
     foreach ($bundles as $bundle_id => $data) {
       if ($data['vocabulary'] === $term->bundle()) {
-        if ($is_update && isset($term->original)) {
-          // Compare parent term.
-          $original_parent = $term->original->parent->target_id ?? NULL;
-          $current_parent = $term->parent->target_id ?? NULL;
 
-          // Compare label.
-          $original_label = $term->original->label();
-          $current_label = $term->label();
+        if ($is_update) {
+          $original = EntityHelper::getSecureOriginalEntity($term);
+          
+          if ($original instanceof TermInterface) {
+            $original_parent = $original->get('parent')->target_id ?? NULL;
+            $current_parent = $term->get('parent')->target_id ?? NULL;
 
-          if ($original_parent === $current_parent && $original_label === $current_label) {
-            // No changes relevant for alias processing.
-            return FALSE;
+            $original_label = $original->label();
+            $current_label = $term->label();
+
+            if ($original_parent === $current_parent && $original_label === $current_label) {
+              return FALSE;
+            }
           }
+          
         }
 
-        // In insert or delete cases, or if changes are detected on update.
+        // Insert, delete, or relevant changes on update.
         return TRUE;
       }
     }

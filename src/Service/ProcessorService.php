@@ -147,12 +147,14 @@ class ProcessorService implements ProcessorServiceInterface {
    *   True if update, false if insert.
    */
   public function setNodeAlias(NodeInterface $node, bool $is_update): void {
-
+    
     $bundles = $this->configFactory->get('taxonomy_section_paths.settings')->get('bundles');
     $node_bundle = $node->bundle();
     $config = $bundles[$node_bundle] ?? NULL;
     $field = $config['field'];
     $term_id = $node->get($field)->target_id;
+
+    //~ var_dump($field, $term_id);
 
     $create_alias = FALSE;
     $path = '/node/' . $node->id();
@@ -178,9 +180,10 @@ class ProcessorService implements ProcessorServiceInterface {
       }
     }
 
+
     if ($create_alias) {
       $alias = $this->resolver->getNodeAliasPath($term, $node);
-      $alias = $this->aliasActions->ensureUniqueAlias($alias, $langcode, $path);
+      $alias = $this->aliasConflictResolver->ensureUniqueAlias($alias, $langcode, $path);
       if ($alias) {
         $this->aliasActions->saveNewAlias($path, $alias, $langcode);
         $this->messageLogger->logOperation($operation_type, 'node', $node->id(), $node->label(), $alias, $old_alias);

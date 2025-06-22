@@ -6,6 +6,7 @@ use Drupal\path_alias\AliasRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\path_alias\Entity\PathAlias;
 use Drupal\Core\Entity\EntityStorageException;
+use Drupal\taxonomy_section_paths\Contract\AliasFactoryInterface;
 use Drupal\taxonomy_section_paths\Contract\AliasActionsServiceInterface;
 
 /**
@@ -16,6 +17,7 @@ class AliasActionsService implements AliasActionsServiceInterface {
   public function __construct(
     protected AliasRepositoryInterface $aliasRepository,
     protected EntityTypeManagerInterface $entityTypeManager,
+    protected AliasFactoryInterface $aliasFactory,
   ) {}
 
   /**
@@ -92,7 +94,7 @@ class AliasActionsService implements AliasActionsServiceInterface {
    */
   public function saveNewAlias(string $path, string $alias, string $langcode): bool {
     try {
-      $path_alias = PathAlias::create([
+      $path_alias = $this->aliasFactory->create([
         'path' => $path,
         'alias' => $alias,
         'langcode' => $langcode,
@@ -105,27 +107,5 @@ class AliasActionsService implements AliasActionsServiceInterface {
     }
   }
 
-  /**
-   * Check if the proposed alias exists. If it exists add a suffix.
-   *
-   * @param string $base_alias
-   *   The proposed alias.
-   * @param string $langcode
-   *   The language code of entity.
-   * @param string $path
-   *   Entity path.
-   *
-   * @return string
-   *   The alias with suffix if it's need.
-   */
-  public function ensureUniqueAlias(string $base_alias, string $langcode, string $path): string {
-    $alias = $base_alias;
-    $suffix = 2;
-    while ($this->aliasRepository->lookupByAlias($alias, $langcode) && $this->aliasRepository->lookupByAlias($alias, $langcode)['source'] !== $path) {
-      $alias = $base_alias . '-' . $suffix;
-      $suffix++;
-    }
-    return $alias;
-  }
 
 }

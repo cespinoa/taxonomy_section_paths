@@ -36,11 +36,11 @@ class PathResolverService implements PathResolverServiceInterface {
     $path = [];
     $current = $term;
     while ($current instanceof TermInterface) {
-      // Sanitiza con el alias cleaner.
-      $slug = $this->slugifier->slugify($current->label());
-      $path[] = $slug;
+      $path[] = $current->label();
       $current = $current->get('parent')->entity;
     }
+
+    return array_reverse($path);
 
     return array_reverse($path);
   }
@@ -55,9 +55,12 @@ class PathResolverService implements PathResolverServiceInterface {
    *   The full alias of the term.
    */
   public function getTermAliasPath(TermInterface $term): string {
-    $path = '/taxonomy/term/' . $term->id();
-    $langcode = $term->language()->getId();
-    return '/' . implode('/', $this->getFullHierarchy($term));
+    $slugs = array_map(
+      fn($label) => $this->slugifier->slugify($label),
+      $this->getFullHierarchy($term)
+    );
+
+    return '/' . implode('/', $slugs);
   }
 
   /**
