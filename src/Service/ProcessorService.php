@@ -116,11 +116,10 @@ class ProcessorService implements ProcessorServiceInterface {
       $terms = [];
 
       foreach ($this->contextService->get(RequestContextStoreServiceInterface::GROUP_OUTPUT) as $term_id => $term_data) {
-        //~ var_dump($term_id);
         $this->messageLogger->logOperation(
           'delete',
           'taxonomy term',
-          $term->id(),
+          $term_id,
           $term_data['original']->label(),
           '',
           $term_data['old_alias']

@@ -1,8 +1,10 @@
 <?php
 
-namespace Drupal\Tests\taxonomy_section_paths\Kernel;
+namespace Drupal\Tests\taxonomy_section_paths\Unit\Utility\AliasConflictResolver;
 
-use Drupal\KernelTests\KernelTestBase;
+
+
+use Drupal\Tests\UnitTestCase;
 use Drupal\Tests\taxonomy_section_paths\Fake\FakeAliasRepository;
 use Drupal\taxonomy_section_paths\Utility\AliasConflictResolver;
 
@@ -11,12 +13,13 @@ use Drupal\taxonomy_section_paths\Utility\AliasConflictResolver;
  *
  * @group taxonomy_section_paths
  */
-class AliasConflictResolverTest extends KernelTestBase {
-
-  protected static $modules = [];
+class AliasConflictResolverTest extends UnitTestCase {
 
   /**
-   * Tests that aliases are properly resolved to unique values.
+   * @covers \Drupal\taxonomy_section_paths\Utility\AliasConflictResolver::ensureUniqueAlias
+   * @scenario Alias does not exist initially
+   * @context Empty repository
+   * @expected Returns the base alias unchanged
    */
   public function testEnsureUniqueAlias(): void {
     $repository = new FakeAliasRepository();

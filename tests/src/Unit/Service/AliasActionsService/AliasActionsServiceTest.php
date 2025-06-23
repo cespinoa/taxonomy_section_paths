@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\taxonomy_section_paths\Unit;
+namespace Drupal\Tests\taxonomy_section_paths\Unit\Service\AliasActionsService;
 
 use Drupal\taxonomy_section_paths\Service\AliasActionsService;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -10,7 +10,11 @@ use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\taxonomy_section_paths\Contract\AliasFactoryInterface;
 
-
+/**
+ * Tests for AliasActionsService.
+ *
+ * @group taxonomy_section_paths
+ */
 class AliasActionsServiceTest extends TestCase {
 
   protected EntityStorageInterface $storage;
@@ -34,7 +38,12 @@ class AliasActionsServiceTest extends TestCase {
     );
   }
 
-
+  /**
+   * @covers \Drupal\taxonomy_section_paths\Service\AliasActionsService::getOldAlias
+   * @scenario There is an existing alias for the given path and langcode
+   * @context Alias entity is found by storage
+   * @expected Returns the alias string
+   */
   public function testGetOldAliasReturnsAlias() {
     $alias_entity = $this->createMock(PathAlias::class);
     $alias_entity->method('getAlias')->willReturn('/my-alias');
@@ -46,6 +55,12 @@ class AliasActionsServiceTest extends TestCase {
     $this->assertSame('/my-alias', $result);
   }
 
+  /**
+   * @covers \Drupal\taxonomy_section_paths\Service\AliasActionsService::getOldAlias
+   * @scenario No alias entity found for the given path and langcode
+   * @context Storage returns empty array
+   * @expected Returns null
+   */
   public function testGetOldAliasReturnsNullIfNoneFound() {
     $this->storage->method('loadByProperties')->willReturn([]);
 
@@ -53,6 +68,12 @@ class AliasActionsServiceTest extends TestCase {
     $this->assertNull($result);
   }
 
+  /**
+   * @covers \Drupal\taxonomy_section_paths\Service\AliasActionsService::saveNewAlias
+   * @scenario Saving a new alias succeeds
+   * @context AliasFactory creates a PathAlias mock that saves without error
+   * @expected Returns true indicating success
+   */
   public function testSaveNewAlias(): void {
     $values = [
       'path' => '/node/123',
@@ -60,28 +81,30 @@ class AliasActionsServiceTest extends TestCase {
       'langcode' => 'en',
     ];
 
-    // Creamos el mock del PathAlias.
     $alias = $this->createMock(PathAlias::class);
     $alias->expects($this->once())
       ->method('save');
 
-    // La factory debe devolver el alias mockeado.
     $this->aliasFactory
       ->method('create')
       ->with($values)
       ->willReturn($alias);
 
-    // Ejecutamos el método a testear.
     $result = $this->service->saveNewAlias(
       $values['path'],
       $values['alias'],
       $values['langcode'],
     );
 
-    // Afirmamos que todo fue OK.
     $this->assertTrue($result, 'Alias was saved successfully.');
   }
 
+  /**
+   * @covers \Drupal\taxonomy_section_paths\Service\AliasActionsService::saveNewAlias
+   * @scenario Saving a new alias fails due to storage exception
+   * @context AliasFactory creates a PathAlias mock that throws exception on save
+   * @expected Returns false indicating failure
+   */
   public function testSaveNewAliasFails(): void {
     $values = [
       'path' => '/node/456',
@@ -106,6 +129,12 @@ class AliasActionsServiceTest extends TestCase {
     $this->assertFalse($result, 'Alias saving should fail.');
   }
 
+  /**
+   * @covers \Drupal\taxonomy_section_paths\Service\AliasActionsService::deleteOldAlias
+   * @scenario An existing alias entity is found and deleted
+   * @context Storage returns one alias entity which delete() is called once
+   * @expected Returns true indicating successful deletion
+   */
   public function testDeleteOldAlias(): void {
     $aliasMock = $this->createMock(PathAlias::class);
     $aliasMock->expects($this->once())
@@ -122,6 +151,5 @@ class AliasActionsServiceTest extends TestCase {
 
     $this->assertTrue($result, 'Alias should be deleted and return true.');
   }
-
 
 }

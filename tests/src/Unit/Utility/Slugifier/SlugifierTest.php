@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\taxonomy_section_paths\Unit;
+namespace Drupal\Tests\taxonomy_section_paths\Unit\Utility\Slugifier;
 
 use Drupal\taxonomy_section_paths\Utility\Slugifier;
 
