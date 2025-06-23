@@ -17,6 +17,10 @@ use Drupal\taxonomy_section_paths\Service\BatchProcessorService;
 use Drupal\taxonomy_section_paths\Service\ProcessorService;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group taxonomy_section_paths
+ * @covers \Drupal\taxonomy_section_paths\Service\ProcessorService::deleteTermAlias
+ */
 class ProcessorServiceDeleteTermAliasTest extends TestCase {
 
   /**

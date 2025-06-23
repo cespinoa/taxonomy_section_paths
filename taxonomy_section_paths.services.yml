@@ -14,9 +14,6 @@ services:
   taxonomy_section_paths.resolver:
     class: Drupal\taxonomy_section_paths\Service\PathResolverService
     arguments:
-      - '@entity_type.manager'
-      - '@transliteration'
-      - '@path_alias.repository'
       - '@taxonomy_section_paths.slugifier'
     tags: []
     public: true

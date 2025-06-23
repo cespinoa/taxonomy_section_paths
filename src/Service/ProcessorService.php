@@ -63,7 +63,7 @@ class ProcessorService implements ProcessorServiceInterface {
 
     if ($is_update) {
       $action = $is_update ? 'update' : 'delete';
-      $this->relatedNodes->applyToRelatedNodes($action, $term->id());
+      $this->relatedNodes->applyToRelatedNodes($action, $term->id(), $alias);
 
       $children = $this->entityTypeManager
         ->getStorage('taxonomy_term')

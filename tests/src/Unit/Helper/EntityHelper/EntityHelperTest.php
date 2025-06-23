@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
  * Tests for the EntityHelper utility class.
  *
  * @group taxonomy_section_paths
+ * @covers \Drupal\taxonomy_section_paths\Helper\EntityHelper::getSecureOriginalEntity
  */
 class EntityHelperTest extends TestCase {
 

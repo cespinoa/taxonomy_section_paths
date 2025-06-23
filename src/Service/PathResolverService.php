@@ -4,8 +4,6 @@ namespace Drupal\taxonomy_section_paths\Service;
 
 use Drupal\taxonomy\TermInterface;
 use Drupal\node\NodeInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\path_alias\AliasRepositoryInterface;
 use Drupal\taxonomy_section_paths\Contract\PathResolverServiceInterface;
 use Drupal\taxonomy_section_paths\Contract\SlugifierInterface;
 
@@ -17,9 +15,6 @@ use Drupal\Component\Transliteration\TransliterationInterface;
 class PathResolverService implements PathResolverServiceInterface {
 
   public function __construct(
-    protected EntityTypeManagerInterface $entityTypeManager,
-    protected TransliterationInterface $transliteration,
-    protected AliasRepositoryInterface $aliasRepository,
     protected SlugifierInterface $slugifier,
   ) {}
 
@@ -39,9 +34,6 @@ class PathResolverService implements PathResolverServiceInterface {
       $path[] = $current->label();
       $current = $current->get('parent')->entity;
     }
-
-    return array_reverse($path);
-
     return array_reverse($path);
   }
 
@@ -77,7 +69,7 @@ class PathResolverService implements PathResolverServiceInterface {
   public function getNodeAliasPath(TermInterface|string|null $term_or_alias, NodeInterface $node): string {
     $prefix = '';
     if ($term_or_alias instanceof TermInterface) {
-      $prefix = $this->term_or_alias($term) ?? '';
+      $prefix = $this->getTermAliasPath($term_or_alias) ?? '';
     }
     elseif (is_string($term_or_alias)) {
       $prefix = $term_or_alias;
