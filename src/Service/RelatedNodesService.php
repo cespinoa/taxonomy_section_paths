@@ -28,18 +28,20 @@ class RelatedNodesService implements RelatedNodesServiceInterface {
    *
    * @param string $action
    *   Indicates whether the taxonomy term was updated or deleted.
-   * @param Term $term
+   * @param string $term_id
    *   The taxonomy term that triggered the event.
+   * @param string $term_alias
+   *   The taxonomy term alias.
    */
-  public function applyToRelatedNodes(string $action, TermInterface $term): void {
+  public function applyToRelatedNodes(string $action, string $term_id, string $term_alias): void {
     $bundles = $this->configFactory->get('taxonomy_section_paths.settings')->get('bundles');
 
     foreach ($bundles as $bundle => $data) {
       $field = $data['field'];
-      $nodes = $this->getNodesByBundleAndField($term, $bundle, $field);
+      $nodes = $this->getNodesByBundleAndField($term_id, $bundle, $field);
 
       if (!empty($nodes)) {
-        $this->processRelatedNodes($action, $nodes, $term);
+        $this->processRelatedNodes($action, $nodes, $term_alias);
       }
     }
   }
@@ -51,8 +53,8 @@ class RelatedNodesService implements RelatedNodesServiceInterface {
    * bundle that reference the provided taxonomy term through a given entity
    * reference field.
    *
-   * @param \Drupal\taxonomy\TermInterface $term
-   *   The taxonomy term to match in the entity reference field.
+   * @param string $term_id
+   *   The taxonomy term ID to match in the entity reference field.
    * @param string $bundle
    *   The content type (node bundle) to filter by.
    * @param string $field
@@ -61,13 +63,13 @@ class RelatedNodesService implements RelatedNodesServiceInterface {
    * @return \Drupal\node\NodeInterface[]
    *   An array of loaded node entities that match the criteria.
    */
-  public function getNodesByBundleAndField(TermInterface $term, string $bundle, string $field): array {
+  public function getNodesByBundleAndField(string $term_id, string $bundle, string $field): array {
     $query = $this->entityTypeManager
       ->getStorage('node')
       ->getQuery()
       ->accessCheck(TRUE)
       ->condition('type', $bundle)
-      ->condition($field . '.target_id', $term->id());
+      ->condition($field . '.target_id', $term_id);
 
     $nids = $query->execute();
 
@@ -81,19 +83,19 @@ class RelatedNodesService implements RelatedNodesServiceInterface {
    *   The action to perform: 'updated' or 'delete'.
    * @param array $nodes
    *   An array of NodeInterface objects related to the taxonomy term.
-   * @param \Drupal\taxonomy\TermInterface|null $term
-   *   The taxonomy term that has been updated or deleted.
+   * @param string|null $term_alias
+   *   The taxonomy term alias that has been updated or deleted.
    *   Will be NULL in case of deletion if alias regeneration is enabled.
    */
-  public function processRelatedNodes(string $action, array $nodes, ?TermInterface $term): void {
+  public function processRelatedNodes(string $action, array $nodes, ?string $term_alias): void {
     // Determine if we are updating or deleting aliases.
     $is_update = ($action === 'update');
     $config = $this->configFactory->get('taxonomy_section_paths.settings');
     $replace_on_delete = (bool) $config->get('generate_node_alias_if_term_empty');
     $action_msg = $replace_on_delete ? 'insert' : 'update';
 
-    // If action is delete and config allows regenerating, nullify the term.
-    $term = $action === 'delete' ? NULL : $term;
+    // If action is delete and config allows regenerating, nullify the term_alias.
+    $term_alias = $action === 'delete' ? NULL : $term_alias;
 
     foreach ($nodes as $node) {
       $path = '/node/' . $node->id();
@@ -108,7 +110,7 @@ class RelatedNodesService implements RelatedNodesServiceInterface {
       }
 
       if ($is_update || $replace_on_delete) {
-        $new_alias = $this->resolver->getNodeAliasPath($term, $node);
+        $new_alias = $this->resolver->getNodeAliasPath($term_alias, $node);
         if ($this->aliasActions->saveNewAlias($path, $new_alias, $langcode)) {
           $this->messageLogger->logOperation($action_msg, 'node', $node->id(), $node->label(), $new_alias, $old_alias);
         }

@@ -29,11 +29,11 @@ class BatchProcessorService {
    *
    * @param string $action
    *   Action to do: update or delete.
-   * @param array $terms
-   *   Terms array to process.
+   * @param array $terms_data
+   *   Term ID and alias to process.
    */
-  public function queueTermsForNodeUpdate(string $action, array $terms): void {
-    if (empty($terms)) {
+  public function queueTermsForNodeUpdate(string $action, array $terms_data ): void {
+    if (empty($terms_data)) {
       return;
     }
 
@@ -43,8 +43,8 @@ class BatchProcessorService {
       ->setProgressMessage($this->t('Processing @current of @total taxonomy terms...'))
       ->setErrorMessage($this->t('An error occurred during term-based node update.'));
 
-    foreach ($terms as $term) {
-      $batch->addOperation([self::class, 'processTerm'], [$action, $term]);
+    foreach ($terms_data as $term_id=>$term_alias) {
+      $batch->addOperation([self::class, 'processTerm'], [$action,$term_id, $term_alias]);
     }
 
     batch_set($batch->toArray());
@@ -54,19 +54,18 @@ class BatchProcessorService {
    * Callback del batch para aplicar la actualización a un término.
    *
    * @param string $action
-   *   Action to do.
-   * @param \Drupal\taxonomy\TermInterface $term
-   *   Term to process.
+   *   Action to do: update or delete.
+   * @param string $term_id
+   *   Term ID to process.
+   * @param string|null $term_alias
+   *   The taxonomy term alias.
    * @param array|\ArrayAccess $context
    *   Batch context.
    */
-  public static function processTerm(string $action, TermInterface $term, array &$context): void {
-    $entity_type_manager = \Drupal::entityTypeManager();
-    $related_nodes = \Drupal::service('taxonomy_section_paths.related_nodes');
-
-    if ($term instanceof TermInterface) {
-      $related_nodes->applyToRelatedNodes($action, $term);
-    }
+  public static function processTerm(string $action, string $term_id, ?string $term_alias, array &$context): void {
+    \Drupal::service('taxonomy_section_paths.related_nodes')
+      ->applyToRelatedNodes($action, $term_id, $term_alias); 
   }
+
 
 }

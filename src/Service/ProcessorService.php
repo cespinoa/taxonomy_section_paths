@@ -63,7 +63,7 @@ class ProcessorService implements ProcessorServiceInterface {
 
     if ($is_update) {
       $action = $is_update ? 'update' : 'delete';
-      $this->relatedNodes->applyToRelatedNodes($action, $term);
+      $this->relatedNodes->applyToRelatedNodes($action, $term->id());
 
       $children = $this->entityTypeManager
         ->getStorage('taxonomy_term')
@@ -116,6 +116,7 @@ class ProcessorService implements ProcessorServiceInterface {
       $terms = [];
 
       foreach ($this->contextService->get(RequestContextStoreServiceInterface::GROUP_OUTPUT) as $term_id => $term_data) {
+        //~ var_dump($term_id);
         $this->messageLogger->logOperation(
           'delete',
           'taxonomy term',
@@ -126,14 +127,14 @@ class ProcessorService implements ProcessorServiceInterface {
         );
 
         if ($use_batch) {
-          $terms[] = $term_data['original'];
+          $terms_data[$term_data['original']->id()] = $term_data['old_alias'];
         }
         else {
-          $this->relatedNodes->applyToRelatedNodes('delete', $term_data['original']);
+          $this->relatedNodes->applyToRelatedNodes('delete', $term_data['original']->id(), $term_data['old_alias']);
         }
       }
       if ($use_batch) {
-        $this->batchProcessor->queueTermsForNodeUpdate('delete', $terms);
+        $this->batchProcessor->queueTermsForNodeUpdate('delete', $terms_data);
       }
     }
   }

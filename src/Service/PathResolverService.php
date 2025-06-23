@@ -66,17 +66,25 @@ class PathResolverService implements PathResolverServiceInterface {
   /**
    * Returns the full alias (e.g., "/category/subcategory/title") of the node.
    *
-   * @param \Drupal\taxonomy\TermInterface|null $term
-   *   (Optional) A taxonomy term used as prefix.
+   * @param \Drupal\taxonomy\TermInterface|string|null $term_or_alias
+   *   (Optional) A taxonomy term or a path used as prefix.
    * @param \Drupal\node\NodeInterface $node
    *   The node for which to generate the alias.
    *
    * @return string
    *   The alias path.
    */
-  public function getNodeAliasPath(?TermInterface $term, NodeInterface $node): string {
-    $prefix = $term ? $this->getTermAliasPath($term) : '';
+  public function getNodeAliasPath(TermInterface|string|null $term_or_alias, NodeInterface $node): string {
+    $prefix = '';
+    if ($term_or_alias instanceof TermInterface) {
+      $prefix = $this->term_or_alias($term) ?? '';
+    }
+    elseif (is_string($term_or_alias)) {
+      $prefix = $term_or_alias;
+    }
     return $prefix . '/' . $this->slugifier->slugify($node->label());
   }
+    
+
 
 }
