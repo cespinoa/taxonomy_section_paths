@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\taxonomy_section_paths\Unit\Service\AliasMessageLogger;
+namespace Drupal\Tests\taxonomy_section_paths\Unit\Utility\AliasMessageLogger;
 
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactoryInterface;

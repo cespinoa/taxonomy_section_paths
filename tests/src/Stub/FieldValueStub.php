@@ -15,13 +15,21 @@ class FieldValueStub {
   protected array $properties;
 
   /**
+   * Métodos simulados.
+   *
+   * @var array<string,mixed>
+   */
+  protected array $methods;
+
+  /**
    * Constructor.
    *
    * @param array<string,mixed> $properties
    *   Array asociativo con nombre => valor de propiedades simuladas.
    */
-  public function __construct(array $properties = []) {
+  public function __construct(array $properties = [], array $methods = []) {
     $this->properties = $properties;
+    $this->methods = $methods;
   }
 
   /**
@@ -36,4 +44,12 @@ class FieldValueStub {
   public function __get(string $name) {
     return $this->properties[$name] ?? NULL;
   }
+
+  public function __call(string $method, array $args) {
+    if (isset($this->methods[$method])) {
+      return call_user_func_array($this->methods[$method], $args);
+    }
+    throw new \BadMethodCallException("Method $method not stubbed.");
+  }
+  
 }

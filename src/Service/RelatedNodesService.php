@@ -6,7 +6,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\taxonomy_section_paths\Contract\PathResolverServiceInterface;
 use Drupal\taxonomy_section_paths\Contract\AliasActionsServiceInterface;
-use Drupal\taxonomy\TermInterface;
 use Drupal\taxonomy_section_paths\Contract\AliasMessageLoggerInterface;
 use Drupal\taxonomy_section_paths\Contract\RelatedNodesServiceInterface;
 
