@@ -5,7 +5,7 @@ namespace Drupal\taxonomy_section_paths\Utility;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasMessageLoggerInterface;
+use Drupal\taxonomy_section_paths\Contract\Utility\AliasMessageLoggerInterface;
 use Psr\Log\LoggerInterface;
 
 /**

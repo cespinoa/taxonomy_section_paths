@@ -3,7 +3,7 @@
 namespace Drupal\taxonomy_section_paths\Utility;
 
 use Drupal\Component\Utility\Unicode;
-use Drupal\taxonomy_section_paths\Contract\SlugifierInterface;
+use Drupal\taxonomy_section_paths\Contract\Utility\SlugifierInterface;
 
 /**
  * Provides a method to generate clean slugs from text.

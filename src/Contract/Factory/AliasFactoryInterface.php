@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\taxonomy_section_paths\Contract;
+namespace Drupal\taxonomy_section_paths\Contract\Factory;
 
 use Drupal\path_alias\Entity\PathAlias;
 

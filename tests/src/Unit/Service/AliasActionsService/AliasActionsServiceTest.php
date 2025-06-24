@@ -8,7 +8,7 @@ use Drupal\path_alias\Entity\PathAlias;
 use Drupal\Core\Entity\EntityStorageInterface;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityStorageException;
-use Drupal\taxonomy_section_paths\Contract\AliasFactoryInterface;
+use Drupal\taxonomy_section_paths\Contract\Factory\AliasFactoryInterface;
 
 /**
  * Tests for AliasActionsService.

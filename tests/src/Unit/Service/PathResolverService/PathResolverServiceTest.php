@@ -5,7 +5,7 @@ namespace Drupal\Tests\taxonomy_section_paths\Unit\Service\PathResolverService;
 use Drupal\taxonomy_section_paths\Service\PathResolverService;
 use Drupal\taxonomy\TermInterface;
 use Drupal\node\NodeInterface;
-use Drupal\taxonomy_section_paths\Contract\SlugifierInterface;
+use Drupal\taxonomy_section_paths\Contract\Utility\SlugifierInterface;
 use PHPUnit\Framework\TestCase;
 
 /**

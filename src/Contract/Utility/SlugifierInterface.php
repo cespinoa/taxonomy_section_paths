@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\taxonomy_section_paths\Contract;
+namespace Drupal\taxonomy_section_paths\Contract\Utility;
 
 /**
  * Interface for generating clean slugs from text strings.

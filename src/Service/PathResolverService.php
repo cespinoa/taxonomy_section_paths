@@ -4,8 +4,8 @@ namespace Drupal\taxonomy_section_paths\Service;
 
 use Drupal\taxonomy\TermInterface;
 use Drupal\node\NodeInterface;
-use Drupal\taxonomy_section_paths\Contract\PathResolverServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\SlugifierInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\PathResolverServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Utility\SlugifierInterface;
 
 use Drupal\Component\Transliteration\TransliterationInterface;
 

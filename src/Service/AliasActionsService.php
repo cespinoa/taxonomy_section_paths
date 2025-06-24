@@ -6,8 +6,8 @@ use Drupal\path_alias\AliasRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\path_alias\Entity\PathAlias;
 use Drupal\Core\Entity\EntityStorageException;
-use Drupal\taxonomy_section_paths\Contract\AliasFactoryInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasActionsServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Factory\AliasFactoryInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\AliasActionsServiceInterface;
 
 /**
  * Provide actions related with alias.

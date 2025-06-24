@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\taxonomy_section_paths\Contract;
+namespace Drupal\taxonomy_section_paths\Contract\Service;
 
 /**
  * Provides a request-scoped key-value store for transient contextual data.

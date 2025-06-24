@@ -8,14 +8,14 @@ use Drupal\node\NodeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\taxonomy_section_paths\Contract\PathResolverServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasActionsServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasMessageLoggerInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasConflictResolverInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\PathResolverServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\AliasActionsServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Utility\AliasMessageLoggerInterface;
+use Drupal\taxonomy_section_paths\Contract\Utility\AliasConflictResolverInterface;
 
-use Drupal\taxonomy_section_paths\Contract\RelatedNodesServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\RequestContextStoreServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\ProcessorServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\RelatedNodesServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\RequestContextStoreServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\ProcessorServiceInterface;
 
 /**
  * Process the alias changes.

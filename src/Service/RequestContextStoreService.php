@@ -2,7 +2,7 @@
 
 namespace Drupal\taxonomy_section_paths\Service;
 
-use Drupal\taxonomy_section_paths\Contract\RequestContextStoreServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\RequestContextStoreServiceInterface;
 
 /**
  * Provides a request-scoped key-value store for transient contextual data.

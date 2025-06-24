@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\taxonomy_section_paths\Contract;
+namespace Drupal\taxonomy_section_paths\Contract\Utility;
 
 /**
  * Interface for logging alias operations and showing user messages.

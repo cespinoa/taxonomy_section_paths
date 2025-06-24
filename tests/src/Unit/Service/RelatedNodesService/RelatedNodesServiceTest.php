@@ -8,9 +8,9 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityViewBuilderInterface;
-use Drupal\taxonomy_section_paths\Contract\PathResolverServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasActionsServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasMessageLoggerInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\PathResolverServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\AliasActionsServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Utility\AliasMessageLoggerInterface;
 use Drupal\node\NodeInterface;
 use Drupal\Core\Config\Config;
 

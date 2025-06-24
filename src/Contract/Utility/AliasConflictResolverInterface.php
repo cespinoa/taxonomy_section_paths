@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\taxonomy_section_paths\Contract;
+namespace Drupal\taxonomy_section_paths\Contract\Utility;
 
 /**
  * Provides a service to resolve alias conflicts.

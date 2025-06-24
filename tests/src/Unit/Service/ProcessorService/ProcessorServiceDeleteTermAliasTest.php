@@ -6,13 +6,13 @@ use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
-use Drupal\taxonomy_section_paths\Contract\PathResolverServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasActionsServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasConflictResolverInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\PathResolverServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\AliasActionsServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Utility\AliasConflictResolverInterface;
 use Drupal\taxonomy\TermInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasMessageLoggerInterface;
-use Drupal\taxonomy_section_paths\Contract\RelatedNodesServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\RequestContextStoreServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Utility\AliasMessageLoggerInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\RelatedNodesServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\RequestContextStoreServiceInterface;
 use Drupal\taxonomy_section_paths\Service\BatchProcessorService;
 use Drupal\taxonomy_section_paths\Service\ProcessorService;
 use PHPUnit\Framework\TestCase;
@@ -88,12 +88,12 @@ class ProcessorServiceDeleteTermAliasTest extends TestCase {
     $service = new ProcessorService(
       $this->createMock(EntityTypeManagerInterface::class),
       $this->createMock(\Drupal\Core\Language\LanguageManagerInterface::class),
-      $this->createMock(\Drupal\taxonomy_section_paths\Contract\PathResolverServiceInterface::class),
+      $this->createMock(\Drupal\taxonomy_section_paths\Contract\Service\PathResolverServiceInterface::class),
       $configFactoryMock,
-      $this->createMock(\Drupal\taxonomy_section_paths\Contract\AliasActionsServiceInterface::class),
+      $this->createMock(\Drupal\taxonomy_section_paths\Contract\Service\AliasActionsServiceInterface::class),
       $contextServiceMock,
       $loggerMock,
-      $this->createMock(\Drupal\taxonomy_section_paths\Contract\AliasConflictResolverInterface::class),
+      $this->createMock(\Drupal\taxonomy_section_paths\Contract\Utility\AliasConflictResolverInterface::class),
       $relatedNodesMock,
       $this->createMock(BatchProcessorService::class),
     );

@@ -5,7 +5,7 @@ namespace Drupal\taxonomy_section_paths\Service;
 use Drupal\Core\Batch\BatchBuilder;
 use Drupal\taxonomy\TermInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\taxonomy_section_paths\Contract\RelatedNodesServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\RelatedNodesServiceInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
 

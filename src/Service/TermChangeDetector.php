@@ -2,7 +2,7 @@
 
 namespace Drupal\taxonomy_section_paths\Service;
 
-use Drupal\taxonomy_section_paths\Contract\TermChangeDetectorInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\TermChangeDetectorInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\taxonomy\TermInterface;
 use Drupal\taxonomy_section_paths\Helper\EntityHelper;

@@ -2,7 +2,7 @@
 
 namespace Drupal\taxonomy_section_paths\Service;
 
-use Drupal\taxonomy_section_paths\Contract\NodeChangeDetectorInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\NodeChangeDetectorInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy_section_paths\Helper\EntityHelper;

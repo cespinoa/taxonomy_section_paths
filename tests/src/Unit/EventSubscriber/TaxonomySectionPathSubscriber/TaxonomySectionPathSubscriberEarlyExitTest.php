@@ -6,11 +6,11 @@ use Drupal\taxonomy_section_paths\EventSubscriber\TaxonomySectionPathSubscriber;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\taxonomy\TermInterface;
 use Drupal\node\NodeInterface;
-use Drupal\taxonomy_section_paths\Contract\ProcessorServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasActionsServiceInterface;
-use Drupal\taxonomy_section_paths\Contract\NodeChangeDetectorInterface;
-use Drupal\taxonomy_section_paths\Contract\TermChangeDetectorInterface;
-use Drupal\taxonomy_section_paths\Contract\RequestContextStoreServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\ProcessorServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\AliasActionsServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\NodeChangeDetectorInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\TermChangeDetectorInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\RequestContextStoreServiceInterface;
 use Drupal\entity_events\Event\EntityEvent;
 use PHPUnit\Framework\TestCase;
 

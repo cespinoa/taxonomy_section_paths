@@ -96,7 +96,7 @@ class BatchRegenerationService {
     $offset = $context['sandbox']['progress'];
     $batch_ids = array_slice($context['sandbox']['term_ids'], $offset, $limit);
 
-    /** @var \Drupal\taxonomy_section_paths\Contract\ProcessorServiceInterface $aliasGenerator */
+    /** @var \Drupal\taxonomy_section_paths\Contract\Service\ProcessorServiceInterface $aliasGenerator */
     $aliasGenerator = \Drupal::service('taxonomy_section_paths.processor');
 
     foreach ($batch_ids as $tid) {

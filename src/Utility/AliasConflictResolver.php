@@ -3,7 +3,7 @@
 namespace Drupal\taxonomy_section_paths\Utility;
 
 use Drupal\path_alias\AliasRepositoryInterface;
-use Drupal\taxonomy_section_paths\Contract\AliasConflictResolverInterface;
+use Drupal\taxonomy_section_paths\Contract\Utility\AliasConflictResolverInterface;
 
 /**
  * Resolves conflicts for URL aliases.

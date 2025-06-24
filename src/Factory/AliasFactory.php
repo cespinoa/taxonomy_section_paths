@@ -3,7 +3,7 @@
 namespace Drupal\taxonomy_section_paths\Factory;
 
 use Drupal\path_alias\Entity\PathAlias;
-use Drupal\taxonomy_section_paths\Contract\AliasFactoryInterface;
+use Drupal\taxonomy_section_paths\Contract\Factory\AliasFactoryInterface;
 
 
 /**

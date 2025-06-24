@@ -18,7 +18,7 @@ services:
     tags: []
     public: true
     
-  Drupal\taxonomy_section_paths\Contract\PathResolverServiceInterface: '@taxonomy_section_paths.resolver'
+  Drupal\taxonomy_section_paths\Contract\Service\PathResolverServiceInterface: '@taxonomy_section_paths.resolver'
 
   taxonomy_section_paths.processor:
     class: Drupal\taxonomy_section_paths\Service\ProcessorService
@@ -34,7 +34,7 @@ services:
       - '@taxonomy_section_paths.related_nodes'
       - '@taxonomy_section_paths.batch_processor'
 
-  Drupal\taxonomy_section_paths\Contract\ProcessorServiceInterface: '@taxonomy_section_paths.processor'
+  Drupal\taxonomy_section_paths\Contract\Service\ProcessorServiceInterface: '@taxonomy_section_paths.processor'
 
 
   taxonomy_section_paths.alias_actions:
@@ -55,7 +55,7 @@ services:
       - '@taxonomy_section_paths.alias_actions'
       - '@taxonomy_section_paths.alias_message_logger'
 
-  Drupal\taxonomy_section_paths\Contract\RelatedNodesServiceInterface: '@taxonomy_section_paths.related_nodes'
+  Drupal\taxonomy_section_paths\Contract\Service\RelatedNodesServiceInterface: '@taxonomy_section_paths.related_nodes'
 
   taxonomy_section_paths.regenerate_alias:
     class: Drupal\taxonomy_section_paths\Service\BatchRegenerationService
@@ -75,7 +75,7 @@ services:
     class: Drupal\taxonomy_section_paths\Service\RequestContextStoreService
     public: true
     
-  Drupal\taxonomy_section_paths\Contract\RequestContextStoreServiceInterface: '@taxonomy_section_paths.store'
+  Drupal\taxonomy_section_paths\Contract\Service\RequestContextStoreServiceInterface: '@taxonomy_section_paths.store'
 
 
   taxonomy_section_paths.node_change_detector:
@@ -85,7 +85,7 @@ services:
     tags: []
     public: true
 
-  Drupal\taxonomy_section_paths\Contract\NodeChangeDetectorInterface: '@taxonomy_section_paths.node_change_detector'
+  Drupal\taxonomy_section_paths\Contract\Service\NodeChangeDetectorInterface: '@taxonomy_section_paths.node_change_detector'
 
   taxonomy_section_paths.term_change_detector:
     class: Drupal\taxonomy_section_paths\Service\TermChangeDetector
@@ -94,14 +94,14 @@ services:
     tags: []
     public: true
   
-  Drupal\taxonomy_section_paths\Contract\TermChangeDetectorInterface: '@taxonomy_section_paths.term_change_detector'
+  Drupal\taxonomy_section_paths\Contract\Service\TermChangeDetectorInterface: '@taxonomy_section_paths.term_change_detector'
 
   taxonomy_section_paths.alias_conflict_resolver:
     class: Drupal\taxonomy_section_paths\Utility\AliasConflictResolver
     arguments:
       - '@path_alias.repository'
 
-  Drupal\taxonomy_section_paths\Contract\AliasConflictResolverInterface: '@taxonomy_section_paths.alias_conflict_resolver'
+  Drupal\taxonomy_section_paths\Contract\Utility\AliasConflictResolverInterface: '@taxonomy_section_paths.alias_conflict_resolver'
 
 
   taxonomy_section_paths.alias_message_logger:
@@ -111,14 +111,14 @@ services:
       - '@messenger'
       - '@logger.factory'
 
-  Drupal\taxonomy_section_paths\Contract\AliasMessageLoggerInterface: '@taxonomy_section_paths.alias_message_logger'
+  Drupal\taxonomy_section_paths\Contract\Utility\AliasMessageLoggerInterface: '@taxonomy_section_paths.alias_message_logger'
 
   taxonomy_section_paths.slugifier:
     class: Drupal\taxonomy_section_paths\Utility\Slugifier
 
-  Drupal\taxonomy_section_paths\Contract\SlugifierInterface: '@taxonomy_section_paths.slugifier'
+  Drupal\taxonomy_section_paths\Contract\Utility\SlugifierInterface: '@taxonomy_section_paths.slugifier'
 
   taxonomy_section_paths.alias_factory:
     class: Drupal\taxonomy_section_paths\Factory\AliasFactory
 
-  Drupal\taxonomy_section_paths\Contract\AliasFactoryInterface: '@taxonomy_section_paths.alias_factory'
+  Drupal\taxonomy_section_paths\Contract\Factory\AliasFactoryInterface: '@taxonomy_section_paths.alias_factory'

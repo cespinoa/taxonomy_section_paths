@@ -4,7 +4,7 @@ namespace Drupal\taxonomy_section_paths\Drush\Commands;
 
 use Drush\Commands\DrushCommands;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\taxonomy_section_paths\Contract\ProcessorServiceInterface;
+use Drupal\taxonomy_section_paths\Contract\Service\ProcessorServiceInterface;
 use Drupal\taxonomy_section_paths\Service\BatchRegenerationService;
 use Drupal\taxonomy\Entity\Term;
 
