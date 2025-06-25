@@ -3,8 +3,10 @@ services:
     class: Drupal\taxonomy_section_paths\Drush\Commands\TaxonomySectionPathsCommands
     arguments:
       - '@config.factory'
+      - '@entity_type.manager'
       - '@taxonomy_section_paths.processor'
       - '@taxonomy_section_paths.regenerate_alias'
+      - '@taxonomy_section_paths.batch_runner'
     tags:
       - { name: drush.command }
 

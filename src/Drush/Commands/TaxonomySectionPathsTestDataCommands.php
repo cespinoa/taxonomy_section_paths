@@ -45,8 +45,8 @@ class TaxonomySectionPathsTestDataCommands extends DrushCommands {
   /**
    * Genera datos de prueba (términos y nodos).
    *
-   * @command taxonomy-section-paths:generate-test-data
-   * @aliases tsp:generate-test
+   * @command taxonomy-section-paths:test-data-generate
+   * @aliases tsp:test-generate
    */
   public function generateTestData(): int {
     $config = $this->configFactory->get('taxonomy_section_paths.settings')->get('bundles');
@@ -148,8 +148,8 @@ class TaxonomySectionPathsTestDataCommands extends DrushCommands {
   /**
    * Elimina los datos de prueba generados anteriormente.
    *
-   * @command taxonomy-section-paths:delete-test-data
-   * @aliases tsp:delete-test
+   * @command taxonomy-section-paths:test-data-delete
+   * @aliases tsp:test-delete
    */
   public function deleteTestData(): int {
     $path = DRUPAL_ROOT . '/modules/custom/taxonomy_section_paths/test_ids.json';

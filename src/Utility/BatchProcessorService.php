@@ -8,19 +8,17 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\taxonomy_section_paths\Contract\Service\RelatedNodesServiceInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
-use Drupal\taxonomy_section_paths\Contract\Utility\BatchRunnerInterface;
-use Drupal\taxonomy_section_paths\Contract\Service\BatchProcessorServiceInterface;
+
 /**
  * Servicio para crear y ejecutar operaciones en batch.
  */
-class BatchProcessorService implements BatchProcessorServiceInterface {
+class BatchProcessorService {
 
   use StringTranslationTrait;
 
   public function __construct(
     protected EntityTypeManagerInterface $entityTypeManager,
     protected RelatedNodesServiceInterface $relatedNodes,
-    protected BatchRunnerInterface $batchRunner,
     TranslationInterface $stringTranslation,
   ) {
     $this->stringTranslation = $stringTranslation;
@@ -49,7 +47,7 @@ class BatchProcessorService implements BatchProcessorServiceInterface {
       $batch->addOperation([self::class, 'processTerm'], [$action,$term_id, $term_alias]);
     }
 
-    $this->batchRunner->setBatch($batch->toArray());
+    batch_set($batch->toArray());
   }
 
   /**
@@ -65,15 +63,8 @@ class BatchProcessorService implements BatchProcessorServiceInterface {
    *   Batch context.
    */
   public static function processTerm(string $action, string $term_id, ?string $term_alias, array &$context): void {
-    \Drupal::service('taxonomy_section_paths.batch_processor')
-      ->processTermInstance($action, $term_id, $term_alias, $context);
-  }
-
-  /**
-   * Método de instancia que contiene la lógica real.
-   */
-  public function processTermInstance(string $action, string $term_id, ?string $term_alias, array &$context): void {
-    $this->relatedNodes->applyToRelatedNodes($action, $term_id, $term_alias);
+    \Drupal::service('taxonomy_section_paths.related_nodes')
+      ->applyToRelatedNodes($action, $term_id, $term_alias); 
   }
 
 

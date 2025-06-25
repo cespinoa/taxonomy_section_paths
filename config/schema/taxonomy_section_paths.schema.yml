@@ -4,18 +4,18 @@ taxonomy_section_paths.settings:
   mapping:
     bundles:
       type: mapping
-      label: 'Per-bundle settings'
+      label: 'Bundles configuration'
       mapping:
-        # Este comodín permite múltiples bundles (como 'article', 'test_article', etc.)
-        "*":
+        '*':
           type: mapping
+          label: 'Bundle settings'
           mapping:
             vocabulary:
               type: string
               label: 'Vocabulary'
             field:
               type: string
-              label: 'Field name'
+              label: 'Reference field'
     generate_node_alias_if_term_empty:
       type: boolean
       label: 'Generate alias if term empty'
@@ -24,5 +24,7 @@ taxonomy_section_paths.settings:
       label: 'Enable event logging'
     silent_messages:
       type: boolean
-      label: 'Silent system messages'
-
+      label: 'Silent messages'
+    use_batch_for_term_operations:
+      type: boolean
+      label: 'Use batch for term operations'

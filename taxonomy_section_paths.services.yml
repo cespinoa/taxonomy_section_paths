@@ -62,14 +62,17 @@ services:
     arguments:
       - '@entity_type.manager'
 
+  Drupal\taxonomy_section_paths\Contract\Service\BatchRegenerationServiceInterface: '@taxonomy_section_paths.regenerate_alias'
       
   taxonomy_section_paths.batch_processor:
     class: Drupal\taxonomy_section_paths\Service\BatchProcessorService
     arguments:
       - '@entity_type.manager'
       - '@taxonomy_section_paths.related_nodes'
+      - '@taxonomy_section_paths.batch_runner'
       - '@string_translation'
 
+  Drupal\taxonomy_section_paths\Contract\Service\BatchProcessorServiceInterface: '@taxonomy_section_paths.batch_processor'
 
   taxonomy_section_paths.store:
     class: Drupal\taxonomy_section_paths\Service\RequestContextStoreService
@@ -122,3 +125,9 @@ services:
     class: Drupal\taxonomy_section_paths\Factory\AliasFactory
 
   Drupal\taxonomy_section_paths\Contract\Factory\AliasFactoryInterface: '@taxonomy_section_paths.alias_factory'
+
+  taxonomy_section_paths.batch_runner:
+    class: Drupal\taxonomy_section_paths\Utility\BatchRunner
+    public: true
+
+  Drupal\taxonomy_section_paths\Contract\Utility\BatchRunnerInterface: '@taxonomy_section_paths.batch_runner'

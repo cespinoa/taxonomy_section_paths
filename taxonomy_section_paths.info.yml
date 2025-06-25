@@ -7,3 +7,4 @@ dependencies:
   - taxonomy
   - entity_events (>=2.0.5)
 configure: taxonomy_section_paths.settings
+schema: config/schema
