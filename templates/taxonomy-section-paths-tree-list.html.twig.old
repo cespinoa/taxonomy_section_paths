@@ -1,0 +1,40 @@
+<nav x-data="{ open: false }" class="container mx-auto sticky top-0 z-50 flex flex-wrap items-center justify-between px-4 py-3 bg-white border-b shadow-sm term-navbar mb-8">
+
+
+
+{% if top_level %}
+<nav class="flex items-center justify-between px-4 py-3 bg-white border-b shadow-sm term-navbar container mx-auto sticky top-0 z-50">
+  {# Branding #}
+  <div class="flex items-center gap-3">
+    {% if branding.site_logo %}
+      <a href="/" class="block w-10 h-10">
+        {{ branding.site_logo }}
+      </a>
+    {% endif %}
+    {% if branding.site_name %}
+      <span class="text-lg font-bold">{{ branding.site_name }}</span>
+    {% endif %}
+    {% if branding.site_slogan3 %}
+      <span class="text-sm text-gray-500">{{ branding.site_slogan }}</span>
+    {% endif %}
+  </div>
+{% endif %}
+  {# Navigation items #}
+  <div class="flex-1">
+    <ul
+      {% if top_level %}
+        {{ attributes.addClass() }}
+      {% else %}
+        x-show="open" x-transition {{ children_attributes.addClass() }}
+      {% endif %}
+    >
+      {% for item in items %}
+        {% if item is not empty %}
+          {{ item.value ?? item }}
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% if top_level %}  
+  </div>
+</nav>
+{% endif %}

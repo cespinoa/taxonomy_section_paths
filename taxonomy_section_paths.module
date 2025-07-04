@@ -9,7 +9,46 @@ use Drupal\Core\Field\FieldConfigInterface;
 
 use Drupal\field\FieldStorageConfigInterface;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\Core\Template\Attribute;
+use Drupal\Core\Path\CurrentPathStack;
+use Drupal\path_alias\AliasRepositoryInterface;
 
+use Drupal\Core\Render\Markup; ///eliminar, solo está para pruebas
+
+
+function taxonomy_section_paths_theme($existing, $type, $theme, $path) {
+  return [
+    'taxonomy_section_paths_tree_list' => [
+      'variables' => [
+        'items' => [],
+        'attributes' => [],
+        'children_attributes' => NULL,
+        'as_navbar' => FALSE,
+        'show_branding' => FALSE,
+        'show_logo' => FALSE,
+        'show_site_name' => FALSE,
+        'show_slogan' => FALSE,
+        'top_level' => FALSE,
+        'vocabulary_id' => NULL,
+        'branding' => [],
+      ],
+      'template' => 'taxonomy-section-paths-tree-list',
+    ],
+    'taxonomy_section_paths_tree_item' => [
+      'variables' => [
+        'label' => NULL,
+        'children' => NULL,
+        'active' => FALSE,
+        'open' => FALSE,
+        'li_left_margin' => 'ml-4',
+        'attributes' => NULL,
+      ],
+    ],
+  ];
+}
+
+
+      
 
 /**
  * Implements hook_requirements().
@@ -91,4 +130,84 @@ function taxonomy_section_paths_form_field_config_edit_form_alter(&$form, \Drupa
       break;
     }
   }
+}
+
+/**
+ * Permite sobreescribir la plantilla taxonomy_section_paths_tree_list.twig
+ * con sugerencias específicas por vocabulario, ruta, etc.
+ */
+function taxonomy_section_paths_theme_suggestions_taxonomy_section_paths_tree_list_alter(array &$suggestions, array $variables){
+  $suffix = $variables['vocabulary_id'];
+  $suggestions[] = 'taxonomy_section_paths_tree_list__' . $suffix;
+}
+
+
+/**
+ * Permite sobreescribir la plantilla taxonomy_section_paths_tree_item.twig
+ * con sugerencias específicas por vocabulario, ruta, etc.
+ */
+function taxonomy_section_paths_theme_suggestions_taxonomy_section_paths_tree_item_alter(array &$suggestions, array $variables) {
+
+  $current_path = \Drupal::service('path.current')->getPath();
+  $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath($current_path, $langcode);
+
+  $suffix = $alias;
+
+  if($suffix == '/'){
+    $suffix = 'main';
+  }
+  else {
+    $suffix = str_replace(['/', '-'], ['_','_'], ltrim($suffix, '\\'));
+  }
+  $suggestions[] = 'taxonomy_section_paths_tree_item__' . $suffix;
+  
+}
+
+
+// ELIMINAR DESDE AQUÍ, ES SOLO UNA PRUEBA
+function taxonomy_section_paths_taxonomy_section_paths_custom_links_alter(array &$custom_links, \Drupal\taxonomy_section_paths\Plugin\Block\TermTreeBlock $block) {
+
+  //~ // Ejemplo: añadir un enlace al principio si estamos en /blog
+  //~ $path = \Drupal::service('path.current')->getPath();
+  //~ if (str_starts_with($path, '/blog')) {
+    //~ $custom_links['top'] = [
+      //~ 'label' => 'Volver al blog',
+      //~ 'url' => '/blog',
+      //~ 'attributes' => ['class' => ['text-sm', 'text-gray-500']],
+    //~ ];
+  //~ }
+}
+
+function taxonomy_section_paths_taxonomy_section_paths_tree_item_alter(array &$item){
+  //~ if($item['#active'] === TRUE){
+    //~ $item['#attributes']->addClass('bg-gray');
+  //~ }
+  //~ kint('Item', $item);
+}
+
+function taxonomy_section_paths_taxonomy_section_paths_build_link_alter(array &$link) {
+  // Ejemplo: Añadir icono a enlaces a un vocabulario concreto.
+  //~ if (str_starts_with($url, '/blog/relatos')) {
+    //~ $link['#title'] = Markup::create('<i class="fa fa-feather"></i> ' . $label);
+  //~ }
+  //~ kint('Link', $link);
+}
+
+
+function taxonomy_section_paths_taxonomy_section_paths_build_list_alter(array &$variables){
+  //~ kint('Variables',$variables);
+}
+
+////// cambiar en el api todas las variables sueltas a $variables
+
+
+
+
+function taxonomy_section_paths_form_block_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) : void {
+  if ($form_state->getFormObject()->getEntity()->getPluginId() === 'taxonomy_term_tree_block') {
+  }
+  
+
+  //
 }

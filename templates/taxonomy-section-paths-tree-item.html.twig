@@ -1,0 +1,17 @@
+<li
+  {{ attributes.addClass().addClass(li_left_margin, 'relative').addClass(active ? 'active' : '').addClass(open ? 'open' : '').addClass('term-group') }}
+  x-data="{ open: {{ open ? 'true' : 'false' }} }"
+>
+    {% if children %}
+      <button @click="open = !open" class="text-left w-full flex items-center gap-1">
+        <span x-text="open ? '-' : '+'"></span>
+        {{ label }}
+      </button>
+          {{ children }}
+    {% else %}
+      <button class="text-left w-full flex align-top items-center gap-1">
+        <span class="invisible"></span>
+        {{ label }}
+      </button>
+    {% endif %}
+</li>

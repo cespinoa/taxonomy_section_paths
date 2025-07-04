@@ -1,0 +1,10 @@
+<ul{{ attributes.addClass('custom-tree-list') }}>
+  {% for item in items %}
+    {# Solo renderizamos si hay contenido #}
+    {% if item is not empty %}
+      <li{{ item.attributes ?? '' }}>
+        {{ item.value ?? item }}
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>

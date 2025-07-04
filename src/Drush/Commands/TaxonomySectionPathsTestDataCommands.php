@@ -8,11 +8,12 @@ use Drush\Commands\DrushCommands;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Component\Uuid\UuidInterface;
+use Drupal\taxonomy_section_paths\Contract\Drush\Commands\TaxonomySectionPathsTestDataCommandsInterface;
 
 /**
  * Insert and delete taxonomy terms and nodes for tests purposes.
  */
-class TaxonomySectionPathsTestDataCommands extends DrushCommands {
+class TaxonomySectionPathsTestDataCommands extends DrushCommands implements TaxonomySectionPathsTestDataCommandsInterface {
 
   /**
    * The config factory interface.

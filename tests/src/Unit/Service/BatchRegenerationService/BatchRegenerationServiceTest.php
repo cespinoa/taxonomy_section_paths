@@ -6,7 +6,6 @@ use Drupal\Core\Batch\BatchBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\taxonomy\TermInterface;
-use Drupal\taxonomy_section_paths\Service\BatchRegenerationService;
 use Drupal\Tests\taxonomy_section_paths\Stub\FieldValueStub;
 use Drupal\Tests\UnitTestCase;
 use Prophecy\Argument;
@@ -45,7 +44,10 @@ class BatchRegenerationServiceTest extends UnitTestCase {
 
     // Instancia del servicio a probar, inyectando el entityTypeManager mockeado.
     $this->service = new \Drupal\taxonomy_section_paths\Service\BatchRegenerationService($this->entityTypeManager);
+
   }
+
+
 
   public function testPrepareBatch() {
     // Arrange: mocks para queries (dos vocabularios).

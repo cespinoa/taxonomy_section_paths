@@ -131,3 +131,16 @@ services:
     public: true
 
   Drupal\taxonomy_section_paths\Contract\Utility\BatchRunnerInterface: '@taxonomy_section_paths.batch_runner'
+
+  taxonomy_section_paths.term_tree_builder:
+    class: Drupal\taxonomy_section_paths\Service\TermTreeBuilder
+    arguments:
+      - '@entity_type.manager'
+      - '@path_alias.repository'
+      - '@renderer'
+      - '@path.current'
+      - '@current_route_match'
+      - '@language_manager'
+    public: true
+
+  Drupal\taxonomy_section_paths\Contract\Service\TermTreeBuilderInterface: '@taxonomy_section_paths.term_tree_builder'

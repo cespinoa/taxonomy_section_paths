@@ -1,4 +1,5 @@
 services:
+
   taxonomy_section_paths.commands:
     class: Drupal\taxonomy_section_paths\Drush\Commands\TaxonomySectionPathsCommands
     arguments:
@@ -17,3 +18,13 @@ services:
       - '@uuid'
     tags:
       - { name: drush.command }
+
+  taxonomy_section_paths.final_check:
+    class: Drupal\taxonomy_section_paths\Drush\Commands\FinalCheckCommand
+    tags:
+      - { name: drush.command }
+    arguments:
+      - '@entity_type.manager'
+      - '@path_alias.manager'
+      - '@uuid'
+      

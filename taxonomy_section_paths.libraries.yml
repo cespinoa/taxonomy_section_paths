@@ -1,0 +1,11 @@
+term_tree:
+  version: 1.x
+  js:
+    https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js: { type: external, minified: true }
+    js/navbar-sticky.js: {}
+    dependencies:
+    - core/drupal
+    - core/jquery
+  css:
+    theme:
+      css/taxonomy-section-paths.css: {}

@@ -1,0 +1,13 @@
+<li class="term-item {{ active ? 'active' }} {{ open ? 'open' }}">
+  <div x-data="{ open: {{ open ? 'true' : 'false' }} }" class="term-group">
+    <button @click="open = !open" class="text-left w-full text-blue-600 hover:underline flex items-center gap-1">
+      <span x-text="open ? '-' : '+'">+</span>
+      {{ label }}
+    </button>
+    {% if children %}
+      <ul x-show="open" x-transition class="ml-4">
+        {{ children }}
+      </ul>
+    {% endif %}
+  </div>
+</li>

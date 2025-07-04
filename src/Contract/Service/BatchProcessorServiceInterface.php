@@ -13,7 +13,7 @@ use Drupal\taxonomy_section_paths\Contract\Utility\BatchRunnerInterface;
 /**
  * Servicio para crear y ejecutar operaciones en batch.
  */
-class BatchProcessorServiceInterface {
+interface BatchProcessorServiceInterface {
 
   /**
    * Añade términos a una cola batch para actualizar sus nodos relacionados.

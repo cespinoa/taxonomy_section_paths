@@ -1,0 +1,89 @@
+
+{% if top_level %}
+
+  {% if as_navbar %}
+    <div id="sticky-sentinel" class="h-px w-full"></div>
+    <nav
+      x-data="{ open: false }"
+      data-sticky-navbar
+      class="w-full px-4 py-3  term-navbar mb-12 shadow-lg bg-white"
+    >
+      <div class="nav-inner-wrapper container mx-auto flex flex-wrap items-center justify-between">
+
+        {% if show_branding %}
+          {# Branding #}
+          <div class="flex items-center gap-3">
+            {% if branding.site_logo and show_logo %}
+              <a href="/" class="block w-10 h-10">
+                {{ branding.site_logo }}
+              </a>
+            {% endif %}
+            
+            {# Contenedor para name y slogan apilados verticalmente #}
+            <div class="flex flex-col">
+              {% if branding.site_name and show_site_name %}
+                <span class="text-lg font-bold">{{ branding.site_name }}</span>
+              {% endif %}
+              {% if branding.site_slogan and show_slogan %}
+                <span class="text-sm text-gray-500">{{ branding.site_slogan }}</span>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+
+        {# Toggle para móvil #}
+        <div class="md:hidden">
+          <button @click="open = !open" class="text-gray-700 focus:outline-none" aria-label="Toggle menu">
+            <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor" >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+  {% endif %}
+
+      {# Menú para escritorio (visible md+) #}
+      <ul {{ attributes.addClass() }}>
+        {% for item in items %}
+          {% if item is not empty %}
+            {{ item.value ?? item }}
+          {% endif %}
+        {% endfor %}
+      </ul>
+
+  {% if as_navbar %}
+        {# Menú para móvil (visible solo cuando open es true) #}
+        <ul 
+          x-show="open" 
+          x-transition 
+          class="w-full flex flex-col gap-2 mt-4 md:hidden" 
+          style="display: none;"  {# Para evitar parpadeo inicial #}
+          {{ attributes.addClass() }}
+        >
+          {% for item in items %}
+            {% if item is not empty %}
+              {{ item.value ?? item }}
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    </nav>
+  {% endif %}
+{% else %}
+  {# Subniveles del árbol #}
+  <ul x-show="open" x-transition {{ children_attributes.addClass() }}>
+    {% for item in items %}
+      {% if item is not empty %}
+        {{ item.value ?? item }}
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% endif %}
+
+
